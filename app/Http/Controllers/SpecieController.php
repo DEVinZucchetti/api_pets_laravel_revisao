@@ -2,35 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Race;
+use App\Models\Specie;
 use App\Traits\HttpResponses;
 use Exception;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RaceController extends Controller
+class SpecieController extends Controller
 {
     use HttpResponses;
 
-    // Lista todos ou parcialmente os dados de um recurso
     public function index() {
-        $races = Race::all();
-        return $races;
+        $spaces = Specie::all();
+        return $spaces;
     }
 
     public function store(Request $request)
     {
         try {
             $request->validate([
-                'name' => 'required|string|unique:races|max:50'
+                'name' => 'required|string|unique:species|max:50'
             ]);
 
             $data = $request->all();
 
-            $race = Race::create($data);
+            $space = Specie::create($data);
 
-            return $race;
+            return $space;
         } catch (Exception $exception) {
             return $this->error($exception->getMessage(), Response::HTTP_BAD_REQUEST);
         }
