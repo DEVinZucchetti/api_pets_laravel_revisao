@@ -46,4 +46,27 @@ class PetController extends Controller
             return $this->error($exception->getMessage(), Response::HTTP_BAD_REQUEST);
         }
     }
+
+    public function store(Request $request)
+    {
+        try {
+            // rebecer os dados via body
+            $data = $request->all();
+
+            $request->validate([
+                'name' => 'required|string|max:150',
+                'age' => 'int',
+                'weight' => 'numeric',
+                'size' => 'required|string', // melhorar validacao para enum
+                'race_id' => 'required|int',
+                'specie_id' => 'required|int'
+            ]);
+
+            $pet = Pet::create($data);
+
+            return $pet;
+        } catch (\Exception $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
+    }
 }
