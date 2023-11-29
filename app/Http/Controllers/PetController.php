@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SendWelcomePet;
 use App\Models\Pet;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\Response;
 
 class PetController extends Controller
@@ -57,12 +59,15 @@ class PetController extends Controller
                 'name' => 'required|string|max:150',
                 'age' => 'int',
                 'weight' => 'numeric',
-                'size' => 'required|string', // melhorar validacao para enum
+                'size' => 'required|string|in:SMALL,MEDIUM,LARGE,EXTRA_LARGE', // melhorar validacao para enum
                 'race_id' => 'required|int',
                 'specie_id' => 'required|int'
             ]);
 
             $pet = Pet::create($data);
+
+            Mail::to('henrique.douglas.costaa@gmail.com', 'Henrique Douglas')
+            ->send(new SendWelcomePet($pet->name, 'Henrique Douglas'));
 
             return $pet;
         } catch (\Exception $exception) {
