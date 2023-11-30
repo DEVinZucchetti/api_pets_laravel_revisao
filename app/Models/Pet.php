@@ -15,4 +15,12 @@ class Pet extends Model
     protected $fillable = ['name', 'weight', 'size', 'age', 'race_id', 'specie_id'];
 
     protected $hidden = ['created_at','updated_at'];
+
+    public function race() {
+        return $this->hasOne(Race::class, 'id', 'race_id');
+    }
+
+    public function specie() {
+        return $this->hasOne(Specie::class, 'id', 'specie_id');
+    }
 }

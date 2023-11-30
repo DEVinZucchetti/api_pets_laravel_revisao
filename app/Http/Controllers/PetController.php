@@ -21,7 +21,18 @@ class PetController extends Controller
             $filters = $request->query();
 
             // inicializa uma query
-            $pets = Pet::query();
+            $pets = Pet::query()
+            ->select(
+                'id as id_pet',
+                'pets.name as pet_name',
+                'pets.race_id',
+                'pets.specie_id'
+                )
+            #->with('race') // traz todas as colunas
+            ->with(['race' => function ($query) {
+                $query->select('name', 'id');
+            }])
+            ->with('specie');
 
             // verifica se filtro
             if ($request->has('name') && !empty($filters['name'])) {
@@ -66,7 +77,7 @@ class PetController extends Controller
 
             $pet = Pet::create($data);
 
-            Mail::to('henrique.douglas.costaa@gmail.com', 'Henrique Douglas')
+            Mail::to('henrique.cavalcante@edu.sc.senai.br', 'Henrique Douglas')
             ->send(new SendWelcomePet($pet->name, 'Henrique Douglas'));
 
             return $pet;
