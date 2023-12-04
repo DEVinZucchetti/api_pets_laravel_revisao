@@ -16,3 +16,5 @@ Route::get('pets', [PetController::class, 'index']);
 Route::post('pets', [PetController::class, 'store']);
 
 Route::get('pets/export', [PetsReportController::class, 'export']);
+
+Route::post('pets/files', [PetController::class, 'upload']);

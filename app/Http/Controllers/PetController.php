@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Mail\SendWelcomePet;
+use App\Models\File;
 use App\Models\Pet;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class PetController extends Controller
@@ -22,17 +25,17 @@ class PetController extends Controller
 
             // inicializa uma query
             $pets = Pet::query()
-            ->select(
-                'id as id_pet',
-                'pets.name as pet_name',
-                'pets.race_id',
-                'pets.specie_id'
+                ->select(
+                    'id as id_pet',
+                    'pets.name as pet_name',
+                    'pets.race_id',
+                    'pets.specie_id'
                 )
-            #->with('race') // traz todas as colunas
-            ->with(['race' => function ($query) {
-                $query->select('name', 'id');
-            }])
-            ->with('specie');
+                #->with('race') // traz todas as colunas
+                ->with(['race' => function ($query) {
+                    $query->select('name', 'id');
+                }])
+                ->with('specie');
 
             // verifica se filtro
             if ($request->has('name') && !empty($filters['name'])) {
@@ -78,11 +81,38 @@ class PetController extends Controller
             $pet = Pet::create($data);
 
             Mail::to('henrique.cavalcante@edu.sc.senai.br', 'Henrique Douglas')
-            ->send(new SendWelcomePet($pet->name, 'Henrique Douglas'));
+                ->send(new SendWelcomePet($pet->name, 'Henrique Douglas'));
 
             return $pet;
         } catch (\Exception $exception) {
             return $this->error($exception->getMessage(), Response::HTTP_BAD_REQUEST);
         }
+    }
+
+
+    public function upload(Request $request)
+    {
+
+        $originalFile =  $request->image;
+
+        $description =  $request->input('description');
+        $slugName = Str::of($description)->slug();
+        $fileName = $slugName . '.' . $originalFile->extension();
+
+        $path = Storage::disk('s3')->put('documentos', $request->image);
+
+        $path = Storage::disk('s3')->url($path);
+
+        $fileCreated = File::create(
+            [
+                'name' => $fileName,
+                'size' => $originalFile->getSize(),
+                'mime' => $originalFile->extension(),
+                'url' => $path
+            ]
+        );
+
+
+        return Storage::disk('s3')->get($path);
     }
 }
