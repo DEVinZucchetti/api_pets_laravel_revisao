@@ -11,11 +11,17 @@ use Illuminate\Support\Facades\Route;
 Route::post('races', [RaceController::class, 'store']);
 Route::get('races', [RaceController::class, 'index']);
 
+// BODY -> cadastrar, atualizar
+// Query paraments -> GET -> listar dados
+// Route params -> DELETE, PUT, GET(unico)
+
 Route::post('species', [SpecieController::class, 'store']);
 Route::get('species', [SpecieController::class, 'index']);
+Route::delete('species/{id}', [SpecieController::class, 'destroy']);
 
 Route::get('pets', [PetController::class, 'index']);
 Route::post('pets', [PetController::class, 'store']);
+Route::delete('pets/{id}', [PetController::class, 'destroy']);
 
 Route::get('pets/export', [PetsReportController::class, 'export']);
 

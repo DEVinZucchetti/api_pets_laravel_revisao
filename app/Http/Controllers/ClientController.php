@@ -28,7 +28,7 @@ class ClientController extends Controller
 
             $people = People::create($data);
 
-            $client = Client::create([
+            Client::create([
                 'people_id' => $people->id
             ]);
 
@@ -40,6 +40,7 @@ class ClientController extends Controller
     }
 
 
+
     public function index(Request $request)
     {
 
@@ -47,15 +48,22 @@ class ClientController extends Controller
 
         $clients = Client::query()
             ->select('id as client_id', 'bonus', 'people_id')
-            ->with([
-                'people' => fn ($query) =>
+            ->with('people')
+           /* ->with(
+                [
+                    'people',
+                    fn ($query) => $query->select('id', 'name', 'cpf', 'email', 'contact')
+                ]
+            )
+            */
+            ->whereHas('people', function ($query) use ($search) {
                 $query
-                ->select('id', 'name', 'email', 'cpf', 'contact')
-                ->where('name', 'ilike', "%$search%")
-                ->orWhere('cpf', 'ilike', "%$search%")
-                ->orWhere('contact', 'ilike', "%$search%")
-                ->orWhere('email', 'ilike', "%$search%")
-            ])
+                    // ->select('id','name','cpf', 'email', 'contact')
+                    ->where('name', 'ilike', "%$search%")
+                    ->orWhere('cpf', 'ilike', "%$search%")
+                    ->orWhere('contact', 'ilike', "%$search%")
+                    ->orWhere('email', 'ilike', "%$search%");
+            })
             ->get();
 
         return $clients;
