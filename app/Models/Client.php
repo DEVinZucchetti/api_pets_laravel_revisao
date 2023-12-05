@@ -10,4 +10,8 @@ class Client extends Model
     use HasFactory;
 
     protected $fillable = ['people_id', 'bonus'];
+
+    public function people() {
+        return $this->hasOne(People::class, 'id', 'people_id');
+    }
 }

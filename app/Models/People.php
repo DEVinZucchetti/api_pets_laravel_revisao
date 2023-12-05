@@ -12,4 +12,5 @@ class People extends Model
     protected $table = "peoples";
 
     protected $fillable = ['name', 'cpf', 'email', 'contact'];
+
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Mail\SendWelcomePet;
+use App\Models\Client;
+use App\Models\People;
 use App\Models\Pet;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -22,17 +24,17 @@ class PetController extends Controller
 
             // inicializa uma query
             $pets = Pet::query()
-            ->select(
-                'id as id_pet',
-                'pets.name as pet_name',
-                'pets.race_id',
-                'pets.specie_id'
+                ->select(
+                    'id as id_pet',
+                    'pets.name as pet_name',
+                    'pets.race_id',
+                    'pets.specie_id'
                 )
-            #->with('race') // traz todas as colunas
-            ->with(['race' => function ($query) {
-                $query->select('name', 'id');
-            }])
-            ->with('specie');
+                #->with('race') // traz todas as colunas
+                ->with(['race' => function ($query) {
+                    $query->select('name', 'id');
+                }])
+                ->with('specie');
 
             // verifica se filtro
             if ($request->has('name') && !empty($filters['name'])) {
@@ -72,13 +74,19 @@ class PetController extends Controller
                 'weight' => 'numeric',
                 'size' => 'required|string|in:SMALL,MEDIUM,LARGE,EXTRA_LARGE', // melhorar validacao para enum
                 'race_id' => 'required|int',
-                'specie_id' => 'required|int'
+                'specie_id' => 'required|int',
+                'client_id' => 'int'
             ]);
 
             $pet = Pet::create($data);
 
-            Mail::to('henrique.cavalcante@edu.sc.senai.br', 'Henrique Douglas')
-            ->send(new SendWelcomePet($pet->name, 'Henrique Douglas'));
+            if (!empty($pet->client_id)) {
+
+                $people = People::find($pet->client_id);
+
+                Mail::to($people->email, $people->name)
+                    ->send(new SendWelcomePet($pet->name, 'Henrique Douglas'));
+            }
 
             return $pet;
         } catch (\Exception $exception) {

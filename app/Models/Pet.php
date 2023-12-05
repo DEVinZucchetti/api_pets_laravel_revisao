@@ -12,7 +12,7 @@ class Pet extends Model
     // altera o nome da tabela buscada pelo modelo
     protected $table = 'pets';
 
-    protected $fillable = ['name', 'weight', 'size', 'age', 'race_id', 'specie_id'];
+    protected $fillable = ['name', 'weight', 'size', 'age', 'race_id', 'specie_id', 'client_id'];
 
     protected $hidden = ['created_at','updated_at'];
 
