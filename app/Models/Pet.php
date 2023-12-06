@@ -26,4 +26,8 @@ class Pet extends Model
     public function specie() {
         return $this->hasOne(Specie::class, 'id', 'specie_id');
     }
+
+    public function vaccines(){
+        return $this->hasMany(Vaccine::class);
+    }
 }
