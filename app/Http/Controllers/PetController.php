@@ -34,8 +34,14 @@ class PetController extends Controller
                 ->with(['race' => function ($query) {
                     $query->select('name', 'id');
                 }])
-                ->with('vaccines')
+                ->with('vaccines.professional.people')
+                /*
+                ->with(['vaccines.professional.people' => function ($query) {
+                    $query->orderBy('created_at', 'desc'); // mostra exemplos
+                }])
+                */
                 ->with('specie');
+
 
             // verifica se filtro
             if ($request->has('name') && !empty($filters['name'])) {
