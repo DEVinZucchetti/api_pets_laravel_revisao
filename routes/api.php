@@ -13,8 +13,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::post('races', [RaceController::class, 'store']);
-    Route::get('races', [RaceController::class, 'index']);
+    Route::post('races', [RaceController::class, 'store'])->middleware(['auth:sanctum', 'ability:create-races']);
+    Route::get('races', [RaceController::class, 'index'])->middleware(['auth:sanctum', 'ability:get-races']);
 
     // BODY -> cadastrar, atualizar
     // Query paraments -> GET -> listar dados

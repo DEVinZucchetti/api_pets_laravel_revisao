@@ -15,7 +15,6 @@ class AuthController extends Controller
     public function store(Request $request)
     {
         try {
-
             $data = $request->only('email', 'password');
 
             $request->validate([
@@ -29,16 +28,12 @@ class AuthController extends Controller
                 return $this->error('Não autorizado. Credenciais incorretas', Response::HTTP_UNAUTHORIZED);
             }
 
-            // gerar o token de acesso
-
             $request->user()->tokens()->delete();
-
-            $token = $request->user()->createToken('simple');
+            $token = $request->user()->createToken('simple', ['create-races']);
 
             return $this->response('Autorizado', 201, [
                 'token' => $token->plainTextToken
             ]);
-
 
         } catch (\Exception $exception) {
             return $this->error($exception->getMessage(), Response::HTTP_BAD_REQUEST);
