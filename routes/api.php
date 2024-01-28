@@ -9,6 +9,7 @@ use App\Http\Controllers\RaceController;
 use App\Http\Controllers\SpecieController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VaccineController;
+use App\Http\Middleware\ValidateLimitStudentsToUser;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -25,10 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('species/{id}', [SpecieController::class, 'destroy'])->middleware(['ability:delete-species']);
 
     Route::get('pets', [PetController::class, 'index'])->middleware(['ability:get-pets']);
-    Route::post('pets', [PetController::class, 'store'])->middleware(['ability:create-pets']);
+    Route::post('pets', [PetController::class, 'store'])->middleware(['ability:create-pets', ValidateLimitStudentsToUser::class]);
     Route::delete('pets/{id}', [PetController::class, 'destroy'])->middleware(['ability:delete-pets']);
 
     Route::get('pets/export', [PetsReportController::class, 'export'])->middleware(['ability:export-pdf-pets']);
+
 
     Route::post('clients', [ClientController::class, 'store'])->middleware(['ability:create-clients']);
     Route::get('clients', [ClientController::class, 'index'])->middleware(['ability:get-clients']);
@@ -39,6 +41,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('vaccines', [VaccineController::class, 'store'])->middleware(['ability:create-vaccines']);
 
     Route::post('logout', [AuthController::class, 'logout']);
+
+
+    Route::get('pets/perfil', [PetsReportController::class, 'showPerfil']);
 });
 
 Route::post('login', [AuthController::class, 'store']);
