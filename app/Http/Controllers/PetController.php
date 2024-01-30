@@ -28,7 +28,10 @@ class PetController extends Controller
                     'id',
                     'pets.name as pet_name',
                     'pets.race_id',
-                    'pets.specie_id'
+                    'pets.specie_id',
+                    'pets.size as size',
+                    'pets.weight as weight',
+                    'pets.age as age'
                 )
                 #->with('race') // traz todas as colunas
                 ->with(['race' => function ($query) {
@@ -58,6 +61,10 @@ class PetController extends Controller
 
             if ($request->has('weight') && !empty($filters['weight'])) {
                 $pets->where('weight', $filters['weight']);
+            }
+
+            if ($request->has('specie_id') && !empty($filters['specie_id'])) {
+                $pets->where('specie_id', $filters['specie_id']);
             }
 
             // retorna o resultado
