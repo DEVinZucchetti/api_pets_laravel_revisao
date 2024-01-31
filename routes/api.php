@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::post('races', [RaceController::class, 'store'])->middleware(['ability:create-races']);
+    //Route::post('races', [RaceController::class, 'store'])->middleware(['ability:create-races']);
     Route::get('races', [RaceController::class, 'index'])->middleware(['ability:get-races']);
 
     // BODY -> cadastrar, atualizar
@@ -46,6 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('pets/perfil', [PetsReportController::class, 'showPerfil']);
 });
 
+Route::post('races', [RaceController::class, 'store']);
+Route::get('races', [RaceController::class, 'index']);
 Route::get('species', [SpecieController::class, 'index']);
 Route::get('pets', [PetController::class, 'index']);
 Route::post('pets', [PetController::class, 'store']);
