@@ -32,7 +32,8 @@ class AuthController extends Controller
             'delete-pets',
             'export-pdf-pets',
             'create-clients',
-            'get-clients'
+            'get-clients',
+            'get-species'
         ],
         'VETERINARIO' => [
             'create-races',
@@ -72,7 +73,8 @@ class AuthController extends Controller
             $token = $request->user()->createToken('simple', $permissionsUser);
 
             return $this->response('Autorizado', 201, [
-                'token' => $token->plainTextToken
+                'token' => $token->plainTextToken,
+                'permissions' => $permissionsUser
             ]);
         } catch (\Exception $exception) {
             return $this->error($exception->getMessage(), Response::HTTP_BAD_REQUEST);
