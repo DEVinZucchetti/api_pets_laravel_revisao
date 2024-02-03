@@ -67,4 +67,15 @@ class AdoptionController extends Controller
             return $this->error($exception->getMessage(), Response::HTTP_BAD_REQUEST);
         }
     }
+
+    public function show($id)
+    {
+        $pet = Pet::with("race")->with("specie")->find($id);
+
+        if ($pet->client_id) return $this->error('Dados confidenciais', Response::HTTP_FORBIDDEN);
+
+        if (!$pet) return $this->error('Dado não encontrado', Response::HTTP_NOT_FOUND);
+
+        return $pet;
+    }
 }
