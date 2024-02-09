@@ -47,22 +47,24 @@ class ProfessionalController extends Controller
     public function index(Request $request)
     {
 
-        $search = $request->input('name'); // filtro query params
+        $search = $request->input('text'); // filtro query params
 
         $professionals = Professional::query()
             ->with('people')
-            /*
             ->whereHas('people', function ($query) use ($search) {
                 $query
-                    // ->select('id','name','cpf', 'email', 'contact')
                     ->where('name', 'ilike', "%$search%")
                     ->orWhere('cpf', 'ilike', "%$search%")
                     ->orWhere('contact', 'ilike', "%$search%")
                     ->orWhere('email', 'ilike', "%$search%");
-            })
-            */
-            ->get();
+            });
 
-        return $professionals;
+            if($search) {
+                $professionals
+                ->orWhere("register", $search)
+                ->orWhere("speciality", $search);
+            }
+
+        return $professionals->get();
     }
 }

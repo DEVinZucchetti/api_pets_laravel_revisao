@@ -32,7 +32,6 @@ class ClientController extends Controller
                 'people_id' => $people->id
             ]);
 
-
             return $people;
         } catch (\Exception $exception) {
             return $this->error($exception->getMessage(), Response::HTTP_BAD_REQUEST);
