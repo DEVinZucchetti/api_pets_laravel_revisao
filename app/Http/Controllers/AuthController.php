@@ -24,7 +24,8 @@ class AuthController extends Controller
             'get-pets',
             'delete-pets',
             'create-profissionals',
-            'get-profissionals'
+            'get-profissionals',
+            'create-users'
         ],
         'RECEPCIONISTA' => [
             'create-pets',

@@ -10,7 +10,6 @@ use App\Http\Controllers\RaceController;
 use App\Http\Controllers\SpecieController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VaccineController;
-use App\Http\Middleware\ValidateLimitStudentsToUser;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -44,13 +43,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
 
-
     Route::get('pets/perfil', [PetsReportController::class, 'showPerfil']);
+
+    Route::post('users', [UserController::class, 'store'])->middleware(['ability:create-users']);
 });
-
-
 
 Route::get('pets/adocao', [AdoptionController::class, 'index']);
 Route::get('pets/{id}', [AdoptionController::class, 'show']);
 Route::post('login', [AuthController::class, 'store']);
-Route::post('users', [UserController::class, 'store']);
