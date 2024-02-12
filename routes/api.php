@@ -46,8 +46,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('pets/perfil', [PetsReportController::class, 'showPerfil']);
 
     Route::post('users', [UserController::class, 'store'])->middleware(['ability:create-users']);
+    Route::get('users', [UserController::class, 'index'])->middleware(['ability:create-users']);
 });
 
 Route::get('pets/adocao', [AdoptionController::class, 'index']);
 Route::get('pets/{id}', [AdoptionController::class, 'show']);
+
 Route::post('login', [AuthController::class, 'store']);
