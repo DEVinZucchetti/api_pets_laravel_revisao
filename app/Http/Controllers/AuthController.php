@@ -67,6 +67,7 @@ class AuthController extends Controller
 
             $request->user()->tokens()->delete();
 
+
             $profile = Profile::find($request->user()->profile_id);
 
             $permissionsUser =  $this->permissions[$profile->name];
@@ -75,7 +76,9 @@ class AuthController extends Controller
 
             return $this->response('Autorizado', 201, [
                 'token' => $token->plainTextToken,
-                'permissions' => $permissionsUser
+                'permissions' => $permissionsUser,
+                'name' =>  $request->user()->name,
+                'profile' => $profile->name
             ]);
         } catch (\Exception $exception) {
             return $this->error($exception->getMessage(), Response::HTTP_BAD_REQUEST);
