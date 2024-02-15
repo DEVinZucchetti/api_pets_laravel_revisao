@@ -23,13 +23,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
 
+    Route::get('pets/perfil', [PetsReportController::class, 'showPerfil']);
+    Route::get('pets/export', [PetsReportController::class, 'export'])->middleware(['ability:export-pdf-pets']);
     Route::get('pets', [PetController::class, 'index'])->middleware(['ability:get-pets']);
     Route::post('pets', [PetController::class, 'store'])->middleware(['ability:create-pets']);
     Route::delete('pets/{id}', [PetController::class, 'destroy'])->middleware(['ability:delete-pets']);
     Route::get('pets/{id}', [PetController::class, 'show'])->middleware(['ability:get-pets']);
     Route::put('pets/{id}', [PetController::class, 'update'])->middleware(['ability:create-pets']);
-
-    Route::get('pets/export', [PetsReportController::class, 'export'])->middleware(['ability:export-pdf-pets']);
 
     Route::post('clients', [ClientController::class, 'store'])->middleware(['ability:create-clients']);
     Route::get('clients', [ClientController::class, 'index'])->middleware(['ability:get-clients']);
@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('vaccines', [VaccineController::class, 'store'])->middleware(['ability:create-vaccines']);
 
-    Route::get('pets/perfil', [PetsReportController::class, 'showPerfil']);
+
 
     Route::post('users', [UserController::class, 'store'])->middleware(['ability:create-users']);
     Route::get('users', [UserController::class, 'index'])->middleware(['ability:create-users']);
