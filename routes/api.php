@@ -37,9 +37,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('profissionals', [ProfessionalController::class, 'store'])->middleware(['ability:create-profissionals']);
     Route::get('profissionals', [ProfessionalController::class, 'index'])->middleware(['ability:get-profissionals']);
 
+    Route::get('vacinacao/{id}/pets', [VaccineController::class, 'index'])->middleware(['ability:create-vaccines']);
     Route::post('vaccines', [VaccineController::class, 'store'])->middleware(['ability:create-vaccines']);
-
-
 
     Route::post('users', [UserController::class, 'store'])->middleware(['ability:create-users']);
     Route::get('users', [UserController::class, 'index'])->middleware(['ability:create-users']);

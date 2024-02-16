@@ -26,7 +26,8 @@ class AuthController extends Controller
             'create-profissionals',
             'get-profissionals',
             'create-users',
-           'export-pdf-pets'
+            'export-pdf-pets',
+            'create-vaccines'
         ],
         'RECEPCIONISTA' => [
             'create-pets',
