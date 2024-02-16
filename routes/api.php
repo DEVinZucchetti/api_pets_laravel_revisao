@@ -12,6 +12,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VaccineController;
 use Illuminate\Support\Facades\Route;
 
+
+Route::get('pets/adocao', [AdoptionController::class, 'index']);
+Route::get('pets/{id}/adocao', [AdoptionController::class, 'show']);
+Route::post('login', [AuthController::class, 'store']);
+Route::post('pets/adocao', [AdoptionController::class, 'store']);
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('races', [RaceController::class, 'index'])->middleware(['ability:get-races']);
@@ -42,9 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('users', [UserController::class, 'store'])->middleware(['ability:create-users']);
     Route::get('users', [UserController::class, 'index'])->middleware(['ability:create-users']);
+
+    Route::get('adoptions', [AdoptionController::class, 'getAdoptions']);
 });
 
-Route::get('pets/adocao', [AdoptionController::class, 'index']);
-Route::get('pets/{id}', [AdoptionController::class, 'show']);
 
-Route::post('login', [AuthController::class, 'store']);
