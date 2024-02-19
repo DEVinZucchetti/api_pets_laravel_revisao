@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\SendWelcomePet;
 use App\Models\Adoption;
 use App\Models\Client;
 use App\Models\File;
@@ -10,8 +9,9 @@ use App\Models\People;
 use App\Models\Pet;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
 use Symfony\Component\HttpFoundation\Response;
 
 class AdoptionController extends Controller
@@ -130,7 +130,7 @@ class AdoptionController extends Controller
             'bonus' => true
         ]);
 
-         // vincula o pet com cliente criado
+        // vincula o pet com cliente criado
 
         $pet = Pet::find($adoption->pet_id);
         $pet->update(['client_id' => $client->id]);
@@ -142,26 +142,27 @@ class AdoptionController extends Controller
     public function upload(Request $request)
     {
 
-       $file = $request->file('file');
-       $description =  $request->input('description');
+        $file = $request->file('file');
+        $description =  $request->input('description');
 
-         $slugName = Str::of($description)->slug();
+        /* criar nome amigável arquivo */
+        $slugName = Str::of($description)->slug();
         $fileName = $slugName . '.' . $file->extension();
 
-        $path = Storage::disk('s3')->put('aulateste', $file);
+        /* Enviar o arquivo para amazon */
 
-        $path = Storage::disk('s3')->url($path);
+        $pathBucket = Storage::disk('s3')->put('documentos', $file);
+        $fullPathFile = Storage::disk('s3')->url($pathBucket);
 
-        $fileCreated = File::create(
+        File::create(
             [
                 'name' => $fileName,
                 'size' => $file->getSize(),
                 'mime' => $file->extension(),
-                'url' => $path
+                'url' => $fullPathFile
             ]
         );
 
-        return $fileCreated;
+        return ['message' => 'Arquivo criado com sucesso'];
     }
-
 }
