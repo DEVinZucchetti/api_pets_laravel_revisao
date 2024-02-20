@@ -145,12 +145,12 @@ class AdoptionController extends Controller
             $pet->update(['client_id' => $client->id]);
             $pet->save();
 
-            SolicitationDocument::create([
+            $solicitation = SolicitationDocument::create([
                 'client_id' => $client->id
             ]);
 
             Mail::to($people->email, $people->name)
-                ->send(new SendDocuments($people->name));
+                ->send(new SendDocuments($people->name, $solicitation->id));
 
             DB::commit();
 
@@ -164,8 +164,11 @@ class AdoptionController extends Controller
     public function upload(Request $request)
     {
 
+
         $file = $request->file('file');
         $description =  $request->input('description');
+        $key =  $request->input('key');
+        $id =  $request->input('id');
 
         /* criar nome amigável arquivo */
         $slugName = Str::of($description)->slug();
@@ -176,7 +179,7 @@ class AdoptionController extends Controller
         $pathBucket = Storage::disk('s3')->put('documentos', $file);
         $fullPathFile = Storage::disk('s3')->url($pathBucket);
 
-        File::create(
+        $file = File::create(
             [
                 'name' => $fileName,
                 'size' => $file->getSize(),
@@ -184,6 +187,12 @@ class AdoptionController extends Controller
                 'url' => $fullPathFile
             ]
         );
+
+        $solicitation = SolicitationDocument::find($id);
+
+        if(!$solicitation) return $this->error('Dado não encontrado', Response::HTTP_NOT_FOUND);
+
+        $solicitation->update([$key => $file->id]);
 
         return ['message' => 'Arquivo criado com sucesso'];
     }
