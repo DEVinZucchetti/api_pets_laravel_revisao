@@ -15,7 +15,7 @@ class InitialUser extends Seeder
     {
         User::create([
             'name' => 'ADMIN',
-            'email' => 'henrique.douglas.costaa@gmail.com',
+            'email' => env("DEFAULT_EMAIL"),
             'password' => env("DEFAULT_PASSWORD"),
             'profile_id' => 1
         ]);
