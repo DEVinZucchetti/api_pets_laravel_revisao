@@ -11,4 +11,6 @@ class Race extends Model
 
 
     protected $fillable = ['name'];
+
+
 }
