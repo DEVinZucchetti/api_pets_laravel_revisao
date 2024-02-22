@@ -20,7 +20,6 @@ class UserTest extends TestCase
     public function test_user_admin_can_done_login()
     {
 
-
         $response = $this->post('/api/login', [
             'email' => env("DEFAULT_EMAIL"),
             'password' => env("DEFAULT_PASSWORD")
@@ -90,6 +89,7 @@ class UserTest extends TestCase
             'data' => [
                 'permissions' => [
                     'create-races',
+                    'get-races',
                     'create-species',
                     'get-species',
                     'delete-species',
@@ -105,7 +105,6 @@ class UserTest extends TestCase
     /* pesquisar validar informacoes */
     public function test_user_recepcionista_permissions_load_correct()
     {
-
 
         $user = User::factory()->create(['profile_id' => 3, 'password' => '12345678']);
 

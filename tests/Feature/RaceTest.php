@@ -17,7 +17,6 @@ class RaceTest extends TestCase
      */
     public function test_can_add_new_race(): void
     {
-
         $user = User::factory()->create(['profile_id' => 2, 'password' => '12345678']);
 
         $response = $this->actingAs($user)->post('/api/races', ['name' => 'Gato']);
@@ -66,8 +65,8 @@ class RaceTest extends TestCase
     public function test_user_can_list_all_races()
     {
         // Race::factory(10)->create();
-        Race::create(['name' => 'Gato']);
-        Race::create(['name' => 'Cachorro']);
+        Race::factory(5)->create();
+
 
         $user = User::factory()->create(['profile_id' => 2, 'password' => '12345678']);
         $response = $this->actingAs($user)->get('/api/races');
@@ -76,11 +75,9 @@ class RaceTest extends TestCase
             '*' => [
                 'created_at',
                 'updated_at',
-                'description',
+                'name',
                 'id'
             ]
         ]);
-
-
     }
 }
