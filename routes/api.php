@@ -15,13 +15,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('pets/adocao', [AdoptionController::class, 'index']);
 Route::get('pets/{id}/adocao', [AdoptionController::class, 'show']);
-Route::post('login', [AuthController::class, 'store']);
+Route::post('login', [AuthController::class, 'store']); // ok
 Route::post('pets/adocao', [AdoptionController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::get('races', [RaceController::class, 'index'])->middleware(['ability:get-races']);
-    Route::post('races', [RaceController::class, 'store'])->middleware(['ability:create-races']);
+    Route::get('races', [RaceController::class, 'index'])->middleware(['ability:get-races']); // ok
+    Route::post('races', [RaceController::class, 'store'])->middleware(['ability:create-races']); // ok
 
     Route::get('species', [SpecieController::class, 'index'])->middleware(['ability:get-species']);
     Route::post('species', [SpecieController::class, 'store'])->middleware(['ability:create-species']);
