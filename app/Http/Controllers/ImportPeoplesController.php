@@ -26,8 +26,8 @@ class ImportPeoplesController extends Controller
                 $contentFile = file_get_contents($file->getRealPath());
 
                 // Converte o conteúdo CSV para uma matriz associativa
-                // $csvData = array_map('str_getcsv', explode("\n", $contentFile)); -> importa com ,
 
+                // $csvData = array_map('str_getcsv', explode("\n", $contentFile)); -> importa com ,
                 // importa com ;
                 $csvData = array_map(function($row) {
                     return str_getcsv($row, ";");
@@ -59,7 +59,7 @@ class ImportPeoplesController extends Controller
 
                 DB::commit();
 
-                //return $csvArray;
+                return $this->response('Importado com sucesso', 201);
 
             } else {
                 return $this->response("Arquivo ausente", 400);
