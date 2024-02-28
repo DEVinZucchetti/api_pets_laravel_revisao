@@ -14,8 +14,8 @@ class SpecieController extends Controller
     use HttpResponses;
 
     public function index() {
-        $spaces = Specie::all();
-        return $spaces;
+        $species = Specie::all();
+        return $species;
     }
 
     public function store(Request $request)
@@ -25,11 +25,11 @@ class SpecieController extends Controller
                 'name' => 'required|string|unique:species|max:50'
             ]);
 
-            $data = $request->all();
+            $body = $request->all();
 
-            $space = Specie::create($data);
+            $specie = Specie::create($body);
 
-            return $space;
+            return $specie;
         } catch (Exception $exception) {
             return $this->error($exception->getMessage(), Response::HTTP_BAD_REQUEST);
         }
@@ -39,9 +39,9 @@ class SpecieController extends Controller
     public function destroy($id) {
         $specie = Specie::find($id);
 
-        $count = Pet::query()->where('specie_id', $id)->count();
+        $amountPetsUsingSpecieId = Pet::query()->where('specie_id', $id)->count();
 
-        if($count !== 0) return $this->error('Existem pets usando essa espécie', Response::HTTP_CONFLICT);
+        if($amountPetsUsingSpecieId !== 0) return $this->error('Existem pets usando essa espécie', Response::HTTP_CONFLICT);
 
         if(!$specie) return $this->error('Dado não encontrado', Response::HTTP_NOT_FOUND);
 

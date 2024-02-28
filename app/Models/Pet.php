@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Pet extends Model
 {
     use HasFactory;
-
     use SoftDeletes;
 
     // altera o nome da tabela buscada pelo modelo

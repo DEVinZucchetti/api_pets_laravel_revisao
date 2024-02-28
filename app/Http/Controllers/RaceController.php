@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreRaceRequest;
 use App\Models\Race;
 use App\Traits\HttpResponses;
-use Exception;
+
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+
+use Exception;
 
 class RaceController extends Controller
 {
@@ -19,16 +22,13 @@ class RaceController extends Controller
         return $races;
     }
 
-    public function store(Request $request)
+    public function store(StoreRaceRequest $request)
     {
         try {
-            $request->validate([
-                'name' => 'required|string|unique:races|max:50'
-            ]);
 
-            $data = $request->all();
+            $body = $request->all();
 
-            $race = Race::create($data);
+            $race = Race::create($body);
 
             return $race;
         } catch (Exception $exception) {

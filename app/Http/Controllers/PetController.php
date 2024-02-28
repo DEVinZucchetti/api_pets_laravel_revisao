@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Mail\SendWelcomePet;
 use Illuminate\Support\Str;
+
 use App\Models\File;
 use App\Models\People;
 use App\Models\Pet;
+
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+
 use Symfony\Component\HttpFoundation\Response;
 
 class PetController extends Controller
@@ -47,7 +51,6 @@ class PetController extends Controller
                 */
                 ->with('specie');
 
-
             // verifica se filtro
             if ($request->has('name') && !empty($filters['name'])) {
                 $pets->where('name', 'ilike', '%' . $filters['name'] . '%');
@@ -82,7 +85,7 @@ class PetController extends Controller
     {
         try {
             // rebecer os dados via body
-            $data = $request->all();
+            $body = $request->all();
 
             $request->validate([
                 'name' => 'required|string|max:150',
@@ -94,7 +97,7 @@ class PetController extends Controller
                 'client_id' => 'int'
             ]);
 
-            $pet = Pet::create($data);
+            $pet = Pet::create($body);
 
             if (!empty($pet->client_id)) {
 
@@ -133,7 +136,7 @@ class PetController extends Controller
 
     public function update($id, Request $request)
     {
-        $data = $request->all();
+        $body = $request->all();
 
         $pet = Pet::find($id);
 
@@ -149,8 +152,7 @@ class PetController extends Controller
             'client_id' => 'int'
         ]);
 
-        $pet->update($data);
-
+        $pet->update($body);
         $pet->save();
 
         return $pet;
@@ -164,8 +166,10 @@ class PetController extends Controller
             foreach ($request->file('files') as $file) {
 
                 $description =  $request->input('description');
+
                 $slugName = Str::of($description)->slug();
                 $fileName = $slugName . '.' . $file->extension();
+
                 $pathBucket = Storage::disk('s3')->put('documentos', $file);
                 $fullPathFile = Storage::disk('s3')->url($pathBucket);
 
@@ -177,6 +181,7 @@ class PetController extends Controller
                         'url' => $pathBucket
                     ]
                 );
+
                 array_push($createds, $fileCreated);
             }
         }
