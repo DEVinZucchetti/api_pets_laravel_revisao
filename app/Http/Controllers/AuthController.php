@@ -69,12 +69,8 @@ class AuthController extends Controller
             }
 
             $request->user()->tokens()->delete();
-
-
             $profile = Profile::find($request->user()->profile_id);
-
             $permissionsUser =  $this->permissions[$profile->name];
-
             $token = $request->user()->createToken('simple', $permissionsUser);
 
             return $this->response('Autorizado', 201, [

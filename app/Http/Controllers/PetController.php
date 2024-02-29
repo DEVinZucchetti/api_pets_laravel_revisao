@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePetRequest;
 use App\Mail\SendWelcomePet;
 use Illuminate\Support\Str;
 
@@ -81,32 +82,22 @@ class PetController extends Controller
         }
     }
 
-    public function store(Request $request)
+    private function sendWelcomeEmailToClient(Pet $pet) {
+        if (!empty($pet->client_id)) {
+            $people = People::find($pet->client_id);
+            Mail::to($people->email, $people->name)
+                ->send(new SendWelcomePet($pet->name, 'Henrique Douglas'));
+        }
+    }
+
+    public function store(StorePetRequest $request)
     {
         try {
             // rebecer os dados via body
             $body = $request->all();
-
-            $request->validate([
-                'name' => 'required|string|max:150',
-                'age' => 'int',
-                'weight' => 'numeric',
-                'size' => 'required|string|in:SMALL,MEDIUM,LARGE,EXTRA_LARGE', // melhorar validacao para enum
-                'race_id' => 'required|int',
-                'specie_id' => 'required|int',
-                'client_id' => 'int'
-            ]);
-
             $pet = Pet::create($body);
 
-            if (!empty($pet->client_id)) {
-
-                $people = People::find($pet->client_id);
-
-                Mail::to($people->email, $people->name)
-                    ->send(new SendWelcomePet($pet->name, 'Henrique Douglas'));
-            }
-
+            $this->sendWelcomeEmailToClient($pet);
             return $pet;
         } catch (\Exception $exception) {
             return $this->error($exception->getMessage(), Response::HTTP_BAD_REQUEST);

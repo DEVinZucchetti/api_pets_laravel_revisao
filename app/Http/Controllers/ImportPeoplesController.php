@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\People;
 use App\Traits\HttpResponses;
+use App\Traits\ManageFileCsv;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 use Symfony\Component\HttpFoundation\Response;
 
 class ImportPeoplesController extends Controller
 {
 
     use HttpResponses;
+    use ManageFileCsv;
 
     public function import(Request $request)
     {
@@ -22,45 +25,21 @@ class ImportPeoplesController extends Controller
             if ($request->hasFile('file')) {
                 $file = $request->file('file');
 
-                // Lê o conteúdo do arquivo CSV
-                $contentFile = file_get_contents($file->getRealPath());
-
-                // Converte o conteúdo CSV para uma matriz associativa
-
-                // $csvData = array_map('str_getcsv', explode("\n", $contentFile)); -> importa com ,
-                // importa com ;
-                $csvData = array_map(function($row) {
-                    return str_getcsv($row, ";");
-                }, explode("\n", $contentFile));
-
-                // Pega as keys do array
-                $headers = array_shift($csvData);
-
-                // remover caracteres estranhos das keys
-                $headerParse = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $headers);
-
-                $csvArray = [];
-
-                foreach ($csvData as $row) {
-                    if(count($row) === 4) {
-                        $csvArray[] = array_combine($headerParse, $row);
-                    }
-                }
+                $csvArray = $this->getArrayCsv($file, 4);
 
                 foreach ($csvArray as $item) {
 
-                   $peopleExist = People::query()
-                    ->where('cpf', $item['cpf'])
-                    ->orWhere('email', $item['email'])
-                    ->first();
+                    $peopleExist = People::query()
+                        ->where('cpf', $item['cpf'])
+                        ->orWhere('email', $item['email'])
+                        ->first();
 
-                    if(!$peopleExist) People::create($item);
+                    if (!$peopleExist) People::create($item);
                 }
 
                 DB::commit();
 
                 return $this->response('Importado com sucesso', 201);
-
             } else {
                 return $this->response("Arquivo ausente", 400);
             }
