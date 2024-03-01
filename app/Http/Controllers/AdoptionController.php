@@ -41,6 +41,7 @@ class AdoptionController extends Controller
 
 
             // verifica se filtro
+
             if ($request->has('name') && !empty($filters['name'])) {
                 $pets->where('name', 'ilike', '%' . $filters['name'] . '%');
             }
@@ -104,6 +105,12 @@ class AdoptionController extends Controller
         $adoptions = Adoption::query()->with('pet')->get();
         return $adoptions;
     }
+
+    /*
+        Realiza a aprovação da adoção do pet
+        cadastrando um cliente
+        O status muda para aprovação.
+    */
 
     public function approve(Request $request)
     {

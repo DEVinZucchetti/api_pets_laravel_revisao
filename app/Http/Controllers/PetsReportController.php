@@ -36,11 +36,13 @@ class PetsReportController extends Controller
 
         $result = $pets->get();
 
+         // Use a função loadView sempre, pois .....
         $pdf = Pdf::loadView('pdfs.petsTable', [
             'pets' => $result
         ]);
 
         return $pdf->stream('relatorio.pdf');
+
     }
 
     public function showPerfil(Request $request){

@@ -38,7 +38,8 @@ class PetController extends Controller
                     'pets.specie_id',
                     'pets.size as size',
                     'pets.weight as weight',
-                    'pets.age as age'
+                    'pets.age as age',
+                    'pets.file_id'
                 )
                 #->with('race') // traz todas as colunas
                 ->with(['race' => function ($query) {
@@ -50,7 +51,8 @@ class PetController extends Controller
                     $query->orderBy('created_at', 'desc'); // mostra exemplos
                 }])
                 */
-                ->with('specie');
+                ->with('specie')
+                ->with('file');
 
             // verifica se filtro
             if ($request->has('name') && !empty($filters['name'])) {
@@ -94,8 +96,30 @@ class PetController extends Controller
     {
         try {
             // rebecer os dados via body
-            $body = $request->all();
-            $pet = Pet::create($body);
+
+            $file = $request->file('photo');
+
+
+
+
+            $body =  $request->input();
+
+             /* Enviar o arquivo para amazon */
+
+            $pathBucket = Storage::disk('s3')->put('photos', $file);
+            $fullPathFile = Storage::disk('s3')->url($pathBucket);
+
+            $file = File::create(
+                [
+                    'name' => 'foto_'.$body['name'],
+                    'size' => $file->getSize(),
+                    'mime' => $file->extension(),
+                    'url' => $fullPathFile
+                ]
+            );
+
+
+            $pet = Pet::create([...$body, 'file_id' => $file->id]);
 
             $this->sendWelcomeEmailToClient($pet);
             return $pet;
