@@ -24,7 +24,7 @@ Route::post('pets/adocao', [AdoptionController::class, 'store']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('races', [RaceController::class, 'index'])->middleware(['ability:get-races']); // ok
-    Route::post('races', [RaceController::class, 'sendWelcomeEmailToClient'])->middleware(['ability:create-races']); // ok
+    Route::post('races', [RaceController::class, 'store'])->middleware(['ability:create-races']); // ok
 
     Route::get('species', [SpecieController::class, 'index'])->middleware(['ability:get-species']);
     Route::post('species', [SpecieController::class, 'store'])->middleware(['ability:create-species']);

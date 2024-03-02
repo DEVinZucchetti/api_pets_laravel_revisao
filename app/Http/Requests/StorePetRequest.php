@@ -31,7 +31,8 @@ class StorePetRequest extends FormRequest
             'size' => 'required|string|in:SMALL,MEDIUM,LARGE,EXTRA_LARGE',
             'race_id' => 'required|int',
             'specie_id' => 'required|int',
-            'client_id' => 'int'
+            'client_id' => 'int',
+            'photo' => 'required'
         ];
     }
     public function messages(): array
